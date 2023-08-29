@@ -2,41 +2,28 @@ name: Apptainer Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
 
-  build:
+  build-and-push-SIF:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
-    - name: apt update
-      run: sudo apt update 
-
-    - uses: actions/checkout@v2
-    - name: Install common software propertes
-      run: sudo apt install -y software-properties-common
-
-    - uses: actions/checkout@v2
-    - name: add ppa
-      run: sudo add-apt-repository -y ppa:apptainer/ppa
-
-    - uses: actions/checkout@v2
-    - name: apt update again
-      run: sudo apt update
-
-    - uses: actions/checkout@v2
-    - name: Install apptainer
-      run: sudo apt install -y apptainer
+    - uses: actions/checkout@v3
+    - name: Build the Apptainer image
+      run: |
+        sudo apt update
+        sudo apt install -y software-properties-common
+        sudo add-apt-repository -y ppa:apptainer/ppa
+        sudo apt install -y apptainer
+        sudo apptainer build fdm.sif fdm.def 
+        sudo apptainer build post.sif post.def 
     
-    - uses: actions/checkout@v2
-    - name: Build the fdm Apptainer image
-      run: sudo apptainer build fdm.sif fdm.def 
-
-    - uses: actions/checkout@v2
-    - name: Build the postgres Apptainer image
-      run: sudo apptainer build post.sif post.def 
