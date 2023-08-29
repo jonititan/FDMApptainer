@@ -4,7 +4,8 @@ An Apptainer recipe for using prefect on a HPC system for flight data analysis
 https://docs.prefect.io/
 
 
-To build the singularity images
+To build the apptainer images
+
 ```
   $ sudo apptainer build fdm.sif fdm.def   
 ```
